@@ -4,108 +4,187 @@ package Employee;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 
 public class details_page implements ActionListener {
 
 	JFrame frame;
-	JLabel l1, l2;
-	JButton b1, b2, b3, b4;
+	JLabel imagine, titlu, titlu2;
+	JButton buttonAdd, buttonAddAdmin, buttonView, buttonRemove, buttonUpdate, buttonSalary, buttonCalendar;
+	public static int ok=0;	
 	
-	
-	details_page(){
-	
+	details_page(String emp_id){
+		Date d = new Date();
+		if(d.getDate()==1 && login_page.s == 1 && ok==0) {
+			ok=1;
+			new date_employee(login_page.u);
+		}
+		
 		frame = new JFrame("Employee Dashboard");
+		if(login_page.s == 0) {
+			frame.setTitle("Employee Dashboard (Admin)");
+		}
 		frame.setBackground(Color.WHITE);
 		frame.setLayout(null);
 		
-		l1 = new JLabel();
-		l1.setBounds(0,0,700,500);
-		l1.setLayout(null);
+		imagine = new JLabel();
+		imagine.setBounds(0,0,700,500);
+		imagine.setLayout(null);
 		ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icon/details.png"));
-		l1.setIcon(i1);
+		imagine.setIcon(i1);
+				
+		titlu = new JLabel("Employee Details");
+		titlu.setBounds(430,20,200,40);
+		titlu.setFont(new Font("serif",Font.BOLD,25));
+		titlu.setForeground(Color.BLUE);
+		titlu.setLayout(null);
+		frame.add(titlu);
 		
+		if(login_page.s == 1) {
+			titlu2 = new JLabel("Management");
+			titlu2.setBounds(60,20,200,40);
+			titlu2.setFont(new Font("serif",Font.BOLD,25));
+			titlu2.setForeground(Color.BLUE);
+			titlu2.setLayout(null);
+			frame.add(titlu2);
+		}
 		
+		buttonAdd = new JButton("Add");
+		buttonAdd.setBounds(420,80,90,30);
+		buttonAdd.setBackground(Color.pink);
+		buttonAdd.setFont(new Font("serif",Font.BOLD,15));
+		buttonAdd.addActionListener(this);  // perform action on button click.
+		if(login_page.s == 0) {
+			frame.add(buttonAdd);
+		}
 		
-		l2 = new JLabel("Employee Details");
-		l2.setBounds(430,20,200,40);
-		l2.setFont(new Font("serif",Font.BOLD,25));
-		l2.setForeground(Color.BLUE);
-		l2.setLayout(null);
-		frame.add(l2);
+		buttonAddAdmin = new JButton("Add Admin");
+		buttonAddAdmin.setBounds(465,200,110,30);
+		buttonAddAdmin.setBackground(Color.pink);
+		buttonAddAdmin.setFont(new Font("serif",Font.BOLD,15));
+		buttonAddAdmin.addActionListener(this);  // perform action on button click.
+		if(login_page.s == 0) {
+			frame.add(buttonAddAdmin);
+		}
 		
+		buttonView = new JButton("View");
+		buttonView.setBounds(540,80,90,30);
+		if(login_page.s == 1) {
+			buttonView.setBounds(470,80,90,30);
+		}
+		buttonView.setBackground(Color.pink);
+		buttonView.setFont(new Font("serif",Font.BOLD,15));
+		buttonView.addActionListener(this);  // perform action on button click.
+		frame.add(buttonView);
 		
+		buttonRemove = new JButton("Remove");
+		buttonRemove.setBounds(420,140,90,30);
+		buttonRemove.setBackground(Color.pink);
+		buttonRemove.setFont(new Font("serif",Font.BOLD,15));
+		buttonRemove.addActionListener(this);  // perform action on button click.
+		if(login_page.s == 0) {
+			frame.add(buttonRemove);
+		}
 		
+		buttonUpdate = new JButton("Update");
+		buttonUpdate.setBounds(540,140,90,30);
+		buttonUpdate.setBackground(Color.pink);
+		buttonUpdate.setFont(new Font("serif",Font.BOLD,15));
+		buttonUpdate.addActionListener(this);  // perform action on button click.
+		if(login_page.s == 0) {
+			frame.add(buttonUpdate);
+		}
+		if(login_page.s == 1) {
+			buttonSalary = new JButton("Salary");
+			buttonSalary.setBounds(20,80,90,30);
+			buttonSalary.setBackground(Color.pink);
+			buttonSalary.setFont(new Font("serif",Font.BOLD,15));
+			buttonSalary.addActionListener(this);  // perform action on button click.
+			frame.add(buttonSalary);
+			
+			buttonCalendar = new JButton("Time Off");
+			buttonCalendar.setBounds(130,80,100,30);
+			buttonCalendar.setBackground(Color.pink);
+			buttonCalendar.setFont(new Font("serif",Font.BOLD,15));
+			buttonCalendar.addActionListener(this);  // perform action on button click.
+			frame.add(buttonCalendar);
+		}
 		
-		b1 = new JButton("Add");
-		b1.setBounds(420,80,90,30);
-		b1.setBackground(Color.pink);
-		b1.setFont(new Font("serif",Font.BOLD,15));
-		b1.addActionListener(this);  // perform action on button click.
-		frame.add(b1);
-		
-		
-		b2 = new JButton("View");
-		b2.setBounds(540,80,90,30);
-		b2.setBackground(Color.pink);
-		b2.setFont(new Font("serif",Font.BOLD,15));
-		b2.addActionListener(this);  // perform action on button click.
-		frame.add(b2);
-		
-		
-		b3 = new JButton("Remove");
-		b3.setBounds(420,140,90,30);
-		b3.setBackground(Color.pink);
-		b3.setFont(new Font("serif",Font.BOLD,15));
-		b3.addActionListener(this);  // perform action on button click.
-		frame.add(b3);
-		
-	
-		
-		b4 = new JButton("Update");
-		b4.setBounds(540,140,90,30);
-		b4.setBackground(Color.pink);
-		b4.setFont(new Font("serif",Font.BOLD,15));
-		b4.addActionListener(this);  // perform action on button click.
-		frame.add(b4);
-		
-		frame.add(l1);
+		frame.add(imagine);
 		frame.setVisible(true);
 		frame.setSize(700,500);
 		frame.setLocation(450,200);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
 	}
-	
-	
-	
-
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == b1) {
-			frame.setVisible(false);
-			new add_employee();
+		if(e.getSource() == buttonAdd) {
+			frame.dispose();
+			new add_employee(login_page.u);
 		}
-		else if(e.getSource() == b2) {
-			frame.setVisible(false);
-			new view_employee();
+		if(e.getSource() == buttonAddAdmin) {
+			frame.dispose();
+			new add_admin(login_page.u);
 		}
-		else if(e.getSource() == b3) {
-			frame.setVisible(false);
-			new remove_employee();
+		else if(e.getSource() == buttonView) {
+			frame.dispose();
+			if(login_page.s == 1) {
+				String id;
+				try {
+					conn con = new conn();
+					String q = "select emp_id from employee where email='"+login_page.u+"'";
+					ResultSet rs = con.st.executeQuery(q);
+					if(rs.next()) {
+						id=rs.getString(1);
+						new print_data(id);
+					}
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+			else {
+				new view_employee(login_page.u);
+			}
 		}
-		else if(e.getSource() == b4) {
-			frame.setVisible(false);
-			new search_employee();
+		else if(e.getSource() == buttonRemove) {
+			frame.dispose();
+			new remove_employee(login_page.u);
+		}
+		else if(e.getSource() == buttonUpdate) {
+			frame.dispose();
+			new search_employee(login_page.u);
+		}
+		
+		if(e.getSource() == buttonSalary) {
+			frame.dispose();
+			new salary_employee(login_page.u);
+		}
+		
+		if(e.getSource() == buttonCalendar) {
+			frame.dispose();
+			new calendar_employee(login_page.u);
 		}
 		
 	}
 	
-	
 	public static void main(String [] args) {
-		details_page det = new details_page();
+		long startTime = System.nanoTime();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+		    public void run() {
+
+			    long endTime   = System.nanoTime();
+				long totalTime = endTime - startTime;
+				long sec = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
+				long min = TimeUnit.MINUTES.convert(totalTime, TimeUnit.NANOSECONDS);
+				long ora = TimeUnit.HOURS.convert(totalTime, TimeUnit.NANOSECONDS);
+				System.out.println(sec + " secunde\n" + min + " minute\n" + ora + " ore");
+		    }
+		});
+		details_page newDetails = new details_page(login_page.u);
 	}
 	
 }

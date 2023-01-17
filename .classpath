@@ -6,7 +6,32 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/corui/Desktop/mysql-connector-j-8.0.31.jar">
+	<classpathentry kind="lib" path="C:/Users/corui/eclipse-workspace/Proiect-Angajare-PI/src/itextpdf-5.5.13.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/corui/eclipse-workspace/Proiect-Angajare-PI/src/mysql-connector-j-8.0.31.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/corui/eclipse-workspace/Proiect-Angajare-PI/src/jcalendar-1.4.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/corui/eclipse-workspace/Proiect-Angajare-PI/src/jgoodies-common-1.2.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/corui/eclipse-workspace/Proiect-Angajare-PI/src/jgoodies-looks-2.4.1.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/corui/eclipse-workspace/Proiect-Angajare-PI/src/junit-4.6.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>

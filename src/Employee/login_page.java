@@ -4,15 +4,19 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.util.concurrent.TimeUnit;
 
 
 class login_page implements ActionListener {
 
 	JFrame frame;
-	JLabel l1, l2;
-	JTextField t1;
-	JPasswordField t2;
-	JButton b1, b2;
+	JLabel labelUser, labelPass;
+	JTextField textUser;
+	JPasswordField textPass;
+	JButton butonLogin, butonCancel;
+	
+	public static String u;
+	public static int s;
 	
 	login_page(){
 	
@@ -22,86 +26,86 @@ class login_page implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocation(380,230);
 		
-		l1 = new JLabel("Username");
-		l1.setBounds(40,20,100,30);
-		frame.add(l1);
+		labelUser = new JLabel("Username");
+		labelUser.setBounds(40,20,100,30);
+		frame.add(labelUser);		
 		
+		labelPass = new JLabel("Password");
+		labelPass.setBounds(40,70,100,30);
+		frame.add(labelPass);
 		
-		l2 = new JLabel("Password");
-		l2.setBounds(40,70,100,30);
-		frame.add(l2);
+		textUser = new JTextField();
+		textUser.setBounds(150,20,150,30);
+		frame.add(textUser);
+				
+		textPass = new JPasswordField();
+		textPass.setBounds(150,70,150,30);
+		frame.add(textPass);
 		
-		t1 = new JTextField();
-		t1.setBounds(150,20,150,30);
-		frame.add(t1);
+		ImageIcon imageLoad = new ImageIcon(ClassLoader.getSystemResource("icon/login.png"));
+		Image imageGet = imageLoad.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT); // resize our image size.
+		ImageIcon imageVar = new ImageIcon(imageGet);  // convert image into imageicon
+		JLabel labelPic =  new JLabel(imageVar); // set imageicon on label
+		labelPic.setBounds(350,20,150,150);
+		frame.add(labelPic); // finally, add label on welcome frame.
 		
+		butonLogin = new JButton("Login");
+		butonLogin.setBackground(Color.BLACK);
+		butonLogin.setForeground(Color.WHITE);
+		butonLogin.setBounds(40,140,120,30);
+		butonLogin.setFont(new Font("serif",Font.BOLD,15));
+		butonLogin.addActionListener(this);  // perform action on button click.
+		frame.add(butonLogin);		
 		
-		t2 = new JPasswordField();
-		t2.setBounds(150,70,150,30);
-		frame.add(t2);
-		
-		ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icon/login.png"));
-		Image i2 = i1.getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT); // resize our image size.
-		ImageIcon i3 = new ImageIcon(i2);  // convert image into imageicon
-		JLabel l3 =  new JLabel(i3); // set imageicon on label
-		l3.setBounds(350,20,150,150);
-		frame.add(l3); // finally, add label on welcome frame.
-		
-		b1 = new JButton("Login");
-		b1.setBackground(Color.BLACK);
-		b1.setForeground(Color.WHITE);
-		b1.setBounds(40,140,120,30);
-		b1.setFont(new Font("serif",Font.BOLD,15));
-		b1.addActionListener(this);  // perform action on button click.
-		frame.add(b1);
-		
-		
-		b2 = new JButton("Cancel");
-		b2.setBackground(Color.BLACK);
-		b2.setForeground(Color.WHITE);
-		b2.setBounds(180,140,120,30);
-		b2.setFont(new Font("serif",Font.BOLD,15));
-		b2.addActionListener(this);  // perform action on button click.
-		frame.add(b2);
-		
+		butonCancel = new JButton("Cancel");
+		butonCancel.setBackground(Color.BLACK);
+		butonCancel.setForeground(Color.WHITE);
+		butonCancel.setBounds(180,140,120,30);
+		butonCancel.setFont(new Font("serif",Font.BOLD,15));
+		butonCancel.addActionListener(this);  // perform action on button click.
+		frame.add(butonCancel);		
 		
 		frame.getContentPane().setBackground(Color.WHITE);
 		
 		frame.setVisible(true);
 		frame.setSize(600,300);
-		
-		
-	}
-	
-	
-	
-	
-	
+				
+	}	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if(e.getSource() == b2) {
-			frame.setVisible(false);
+		if(e.getSource() == butonCancel) {
+			frame.dispose();
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		}
 		
-		if(e.getSource() == b1) {
+		if(e.getSource() == butonLogin) {
 			try {
-				conn c1 = new conn();
-				String u = t1.getText();
-				String p = t2.getText();
+				conn con = new conn();
+				u = textUser.getText();
+				String p = textPass.getText();
 				
 				String q = "select * from login where username='"+u+"' and password='"+p+"' ";
-				
-				ResultSet rs = c1.st.executeQuery(q); // used to retrieve data from database using conn.s.executeQuery()
+				ResultSet rs = con.st.executeQuery(q); // used to retrieve data from database using conn.s.executeQuery()
 				
 				if(rs.next()) {  //used to match username and password
-					new details_page().frame.setVisible(true); // open details page and make visible also. 
-					frame.setVisible(false); // close login page
+					s=0; //admin
+					new details_page(u); // open details page and make visible also. 
+					frame.dispose();// close login page
 				}else {
-					JOptionPane.showMessageDialog(null, "Invalid login"); // when not matched.
-					frame.setVisible(false); // close login page
+					q = "select email from employee where email='"+u+"'";
+					ResultSet rs2 = con.st.executeQuery(q);
+					if(rs2.next()) {
+						s=1; //user
+						new details_page(u); // open details page and make visible also. 
+						frame.dispose();// close login page
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Invalid login"); // when not matched.
+						frame.dispose();// close login page
+						login_page newLogin =  new login_page(); // open another
+					}
 				}
 			}catch(Exception ex) {
 				ex.printStackTrace();
@@ -110,9 +114,20 @@ class login_page implements ActionListener {
 		
 	}
 	
-	
 	public static void main(String[] args) {
-		login_page login =  new login_page();
+		long startTime = System.nanoTime();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+		    public void run() {
+		    	
+		    	long endTime   = System.nanoTime();
+				long totalTime = endTime - startTime;
+				long sec = TimeUnit.SECONDS.convert(totalTime, TimeUnit.NANOSECONDS);
+				long min = TimeUnit.MINUTES.convert(totalTime, TimeUnit.NANOSECONDS);
+				long ora = TimeUnit.HOURS.convert(totalTime, TimeUnit.NANOSECONDS);
+				System.out.println(sec + " secunde\n" + min + " minute\n" + ora + " ore");
+		    }
+		});
+		login_page newLogin =  new login_page();
 	}
 	
 }
