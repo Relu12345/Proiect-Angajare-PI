@@ -7,13 +7,65 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * Fereastra unde se pot vizualiza datele despre salariul unui angajat si orele lucrate in luna curenta
+ * @author Coruian Aurel-Ionut
+ */
 class salary_employee implements ActionListener{
+	
+	/**
+     * Variabila JFrame pentru fereastra
+     */
     JFrame frame;
+    /**
+     * Variabila JTextField pentru stocarea datelor angajatului in functie de id 
+     */
     JTextField textID;
+    /**
+     * Variabila Font pentru a seta font-ul tuturor containerelor
+     */
     Font Font;
-    JLabel labelID,labelName,labelLast,labelJob,labelSal, labelHours, labelPic,Placeholder1,Placeholder2,Placeholder3, Placeholder4, Placeholder5;
-    JButton buttonSearch, buttonBack, buttonSalary;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele de familie
+     */
+    JLabel labelName;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele mic
+     */
+    JLabel labelLast;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru locul de munca
+     */
+    JLabel labelJob;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru pentru salariu
+     */
+    JLabel labelSal;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru ore lucrate
+     */
+    JLabel labelHours;
+    /**
+     * Variabila JLabel pentru a seta imaginea ferestrei
+     */
+    JLabel labelPic;
+    /**
+     * Variabila JLabel pentru a organiza mai bine elementele de pe fereastra
+     */
+    JLabel Placeholder1, Placeholder2, Placeholder3, Placeholder4, Placeholder5;
+    /**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+    JButton buttonBack;
+    /**
+     * Variabila JButton pentru a afisa salariul angajatului in functie de orele lucrate
+     */
+    JButton buttonSalary;
 
+    /**
+     * Constructor
+     * @param emp_id Preia de la login emailul angajatului
+     */
     salary_employee(String emp_id){
         frame=new JFrame("Salary");
         frame.setBackground(Color.green);   
@@ -131,9 +183,10 @@ class salary_employee implements ActionListener{
                     Placeholder2.setText(last);
                     Placeholder3.setText(job);
                 }
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			}
+			} catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Database error, could not get data from database", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         
         frame.setSize(500,500);
         frame.setLocation(500,250);  
@@ -141,33 +194,11 @@ class salary_employee implements ActionListener{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+    /**
+	 * Functie pentru actiunea rezultata in urma apasarii unui buton
+	 * @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	 */
     public void actionPerformed(ActionEvent ae){
-
-        if(ae.getSource()==buttonSearch){
-            try{
-                conn con = new conn();
-                String q = "select name,fname,post from employee where emp_id='"+textID.getText()+"' ";
-                ResultSet rs = con.st.executeQuery(q);
-
-                int i=0;
-                if(rs.next()){
-                    String name  = rs.getString(1); // col no. 1
-                    String last   = rs.getString(2); // col no. 2
-                    String job = rs.getString(3); // col no. 3
-
-                    labelName.setVisible(true);
-                    labelLast.setVisible(true);
-                    labelJob.setVisible(true);
-                    buttonSalary.setVisible(true);
-                    i=1;
-                    Placeholder1.setText(name);
-                    Placeholder2.setText(last);
-                    Placeholder3.setText(job);
-                }
-                if(i==0)
-                    JOptionPane.showMessageDialog(null,"Id not found!");
-            }catch(Exception ex){}
-        }
         
         if(ae.getSource()==buttonSalary){
             try {
@@ -194,7 +225,10 @@ class salary_employee implements ActionListener{
 	            
 	            if(i==0)
                     JOptionPane.showMessageDialog(null,"Id not found!");
-            }catch(Exception ex){}
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Database error, could not get data from database", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
             
         }
         
@@ -205,7 +239,11 @@ class salary_employee implements ActionListener{
         }
     }
  
-    public static void main(String[]ar){
+    /**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
+    public static void main(String[] args){
     	long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 		    public void run() {

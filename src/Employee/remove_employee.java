@@ -1,18 +1,81 @@
 package Employee;
 
-
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
+/**
+ * Fereastra unde se poate concedia un angajat
+ * @author Coruian Aurel-Ionut
+ */
 class remove_employee implements ActionListener{
+    
+	/**
+     * Variabila JFrame pentru fereastra
+     */
     JFrame frame;
+    /**
+     * Variabila JTextField pentru a stoca id-ul unui angajat
+     */
     JTextField textID;
-    JLabel labelID,labelName,labelPhone,labelEmail,labelPic,Placeholder1,Placeholder2,Placeholder3;
-    JButton butonSearch,butonRemove,butonCancel,butonBack;
+    /**
+     * Variabila DefaultTableModel pentru a configura modelul tabelului
+     */
+    DefaultTableModel model;
+    /**
+     * Variabila JTable pentru a face un tabel cu datele angajatului
+     */
+    JTable list;
+    /**
+     * Variabila JScrollPane pentru a putea afisa cu usurinta toate detaliile tabelului
+     */
+    JScrollPane scroll;
+    /**
+     * Variabila JLabel pentru a afisa textul de id
+     */
+    JLabel labelID;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele de familie
+     */
+    JLabel labelName;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numarul de telefon
+     */
+    JLabel labelPhone;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru email
+     */
+    JLabel labelEmail;
+    /**
+     * Variabila JLabel pentru a seta imaginea ferestrei
+     */
+    JLabel labelPic;
+    /**
+     * Variabila JLabel pentru a organiza mai bine elementele de pe fereastra
+     */
+    JLabel Placeholder1,Placeholder2,Placeholder3;
+    /**
+     * Variabila JButton pentru a cauta angajatul in functie de id
+     */
+    JButton butonSearch;
+    /**
+     * Variabila JButton pentru a sterge angajatul in functie de id
+     */
+    JButton butonRemove;
+    /**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+    JButton butonCancel, butonBack;
 
+    /**
+     * Constructor
+     * @param emp_id Preia de la login username-ul adminului
+     */
     remove_employee(String emp_id){
         frame=new JFrame("Remove Employee");
         frame.setBackground(Color.green);   
@@ -24,6 +87,15 @@ class remove_employee implements ActionListener{
         ImageIcon img=new ImageIcon(ClassLoader.getSystemResource("icon/remove.jpg"));
         labelPic.setIcon(img);
         frame.add(labelPic);
+        
+        String[] col = {"ID", "First", "Last"};
+        List<Object[]> data = getDataFromDatabase();
+        model = new DefaultTableModel(data.toArray(new Object[0][0]), col);
+        list = new JTable(model);
+        
+        scroll = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.setBounds(30, 150, 300, 100);
+        labelPic.add(scroll);
         
         labelID=new JLabel("Employee Id");
         labelID.setBounds(50,50,250,30);
@@ -109,10 +181,35 @@ class remove_employee implements ActionListener{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+    /**
+     * Functie ce ia din baza de date informatiile angajatului pentru a putea gasi angajatul respectiv
+     * @return data Returneaza lista rezultata
+     */
+    private List<Object[]> getDataFromDatabase() {
+        List<Object[]> data = new ArrayList<>();
+        try {
+            conn con = new conn();
+            ResultSet rs = con.st.executeQuery("SELECT emp_id, name, fname FROM employee");
+            while (rs.next()) {
+                Object[] row = {rs.getInt(1), rs.getString(2), rs.getString(3)};
+                data.add(row);
+            }
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Database error, could not get data from database", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+        return data;
+    }
+    
+    /**
+	* Functie pentru actiunea rezultata in urma apasarii unui buton
+	* @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	*/
     public void actionPerformed(ActionEvent ae){
 
         if(ae.getSource()==butonSearch){
             try{
+            	scroll.setVisible(false);
                 conn con = new conn();
                 String q = "select name,phone,email from employee where emp_id ='"+textID.getText()+"' ";
                 ResultSet rs = con.st.executeQuery(q);
@@ -135,7 +232,10 @@ class remove_employee implements ActionListener{
                 }
                 if(i==0)
                     JOptionPane.showMessageDialog(null,"Id not found!");
-            }catch(Exception ex){}
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Database error, could not get data from database", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         }
         
         // Perform delete operation after confirming id matched
@@ -143,6 +243,10 @@ class remove_employee implements ActionListener{
             try{
                 conn con = new conn();
                 String q = "delete from date where username=(select email from employee where emp_id='"+textID.getText()+"')";
+                con.st.executeUpdate(q);
+                q = "delete from pass where email=(select email from employee where emp_id='"+textID.getText()+"')";
+                con.st.executeUpdate(q);
+                q = "delete from timeoff where username=(select email from employee where emp_id='"+textID.getText()+"')";
                 con.st.executeUpdate(q);
                 q = "delete from employee where emp_id='"+textID.getText()+"'";
                 con.st.executeUpdate(q);
@@ -165,8 +269,9 @@ class remove_employee implements ActionListener{
                 new details_page(login_page.u);
         		System.out.println(login_page.u);
 
-            }catch(Exception ex){
-                JOptionPane.showMessageDialog(null,"Exception occured while deleting record "+ex);
+            }catch(Exception e){
+                JOptionPane.showMessageDialog(null, "Database error, could not delete from database", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
         // When cancel button pressed
@@ -182,7 +287,11 @@ class remove_employee implements ActionListener{
         }
     }
  
-    public static void main(String[]ar){
+    /**
+	* Functia de main
+	* @param args Argumentele pentru main
+	*/
+    public static void main(String[] args){
     	long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 		    public void run() {

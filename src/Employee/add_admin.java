@@ -9,14 +9,54 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 
 
+/**
+ * Fereastra unde se poate adauga un admin
+ * @author Coruian Aurel-Ionut
+ */
 public class add_admin implements ActionListener {
 
+	/**
+	 * Variabila JFrame pentru fereastra
+	 */
 	JFrame frame;
-    JLabel format,title,labelUser,labelPass;
-    JTextField textUser,textPass;
-    JButton butonSubmit,butonCancel;
+    /**
+     * Variabila JLabel pentru a formata fereastra
+     */
+    JLabel format;
+    /**
+     * Variabila JLabel pentru a afisa textul de bun venit
+     */
+    JLabel title;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru username
+     */
+    JLabel labelUser;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru parola
+     */
+    JLabel labelPass;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru username
+     */
+    JTextField textUser;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru parola
+     */
+    JTextField textPass;
+    /**
+     * Variabila JButton pentru a adauga un nou admin
+     */
+    JButton butonSubmit;
+    /**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+    JButton butonCancel;
 
     
+    /**
+     * Constructor
+     * @param emp_id Preia de la login username-ul adminului
+     */
     add_admin(String emp_id){
         frame = new JFrame("Admin");
         frame.setBackground(Color.white);
@@ -74,6 +114,10 @@ public class add_admin implements ActionListener {
         frame.setLocation(200,20);
     }
  
+    /**
+	 * Functie pentru actiunea rezultata in urma apasarii unui buton
+	 * @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	 */
     @Override
 	public void actionPerformed(ActionEvent ae) {
 	
@@ -91,7 +135,8 @@ public class add_admin implements ActionListener {
                 new details_page(login_page.u);
         		System.out.println(login_page.u);
             }catch(Exception e){
-                System.out.println("The error is:"+e);
+                JOptionPane.showMessageDialog(null, "Database error, check that all fields are correct", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }else if(ae.getSource() == butonCancel){
         	frame.dispose();
@@ -100,6 +145,10 @@ public class add_admin implements ActionListener {
         }
 	}
 	
+    /**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
 	public static void main(String[] args) {
 		long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {

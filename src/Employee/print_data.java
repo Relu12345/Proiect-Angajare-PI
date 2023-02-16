@@ -15,12 +15,145 @@ import java.io.*;
 import java.sql.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Fereastra unde se pot printa datele unui angajat
+ * @author Coruian Aurel-Ionut
+ */
 class print_data implements ActionListener{
+    
+	/**
+     * Variabila JFrame pentru fereastra
+     */
     JFrame frame;
-    JLabel labelWelcome,labelID,textID,labelName,textName,labelLast,textLast,labelAddress,textAddress,labelTel,textTel,labelEmail,textEmail,labelEducation,textEducation,labelJob,textJob,labelPic;
-    String emp_id,name,last,address,phone,email,education,job,age,dob,cnp;
-    JButton butonPrint,butonBack;
+    /**
+     * Variabila JLabel pentru textul de bun venit
+     */
+    JLabel labelWelcome;
+    /**
+     * Variabila JLabel pentru a afisa textul de id
+     */
+    JLabel labelID;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru id
+     */
+    JLabel textID;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele de familie
+     */
+    JLabel labelName;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru numele de familie
+     */
+    JLabel textName;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele mic
+     */
+    JLabel labelLast;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru numele mic
+     */
+    JLabel textLast;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru adresa
+     */
+    JLabel labelAddress;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru adresa
+     */
+    JLabel textAddress;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numarul de telefon
+     */
+    JLabel labelTel;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru numarul de telefon
+     */
+    JLabel textTel;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru email
+     */
+    JLabel labelEmail;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru email
+     */
+    JLabel textEmail;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru ultimele studii
+     */
+    JLabel labelEducation;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru ultimele studii
+     */
+    JLabel textEducation;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru locul de munca
+     */
+    JLabel labelJob;
+    /**
+     * Variabila JLabel pentru a afisa valoarea pentru locul de munca
+     */
+    JLabel textJob;
+    /**
+     * Variabila JLabel pentru a seta imaginea ferestrei
+     */
+    JLabel labelPic;
+    /**
+     * Variabila String ce retine valori din baza de date pentru id
+     */
+    String emp_id;
+    /**
+     * Variabila String ce retine valori din baza de date pentru numele de familie
+     */
+    String name;
+    /**
+     * Variabila String ce retine valori din baza de date pentru numele mic
+     */
+    String last;
+    /**
+     * Variabila String ce retine valori din baza de date pentru adresa
+     */
+    String address;
+    /**
+     * Variabila String ce retine valori din baza de date pentru numarul de telefon
+     */
+    String phone;
+    /**
+     * Variabila String ce retine valori din baza de date pentru email
+     */
+    String email;
+    /**
+     * Variabila String ce retine valori din baza de date pentru ultimele studii
+     */
+    String education;
+    /**
+     * Variabila String ce retine valori din baza de date pentru locul de munca
+     */
+    String job;
+    /**
+     * Variabila String ce retine valori din baza de date pentru varsta
+     */
+    String age;
+    /**
+     * Variabila String ce retine valori din baza de date pentru data nasterii
+     */
+    String dob;
+    /**
+     * Variabila String ce retine valori din baza de date pentru cnp
+     */
+    String cnp;
+    /**
+     * Variabila JButton pentru a printa datele angajatului
+     */
+    JButton butonPrint;
+    /**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+    JButton butonBack;
 
+    /**
+     * Constructor
+     * @param e_id Preia de la login identificatorul (emailul pentru angajat si username-ul pentru admin) user-ului
+     */
     print_data(String e_id){
     	frame=new JFrame("Print Data");
         frame.setVisible(false);
@@ -59,6 +192,7 @@ class print_data implements ActionListener{
             	frame.setVisible(true);
             }
         }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Database error, could not get data from database", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 
@@ -174,6 +308,10 @@ class print_data implements ActionListener{
         
     }
 
+    /**
+	 * Functie pentru actiunea rezultata in urma apasarii unui buton
+	 * @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	 */
     public void actionPerformed(ActionEvent ae){
 
     	if(ae.getSource()==butonPrint){
@@ -210,11 +348,12 @@ class print_data implements ActionListener{
 
     		      // Close the document
     		      document.close();
+    		      JOptionPane.showMessageDialog(null,"Printed successfully!");
     		    } catch (DocumentException | IOException ex) {
     		          ex.printStackTrace();
     		    }
+    		    
     		}
-    		    JOptionPane.showMessageDialog(null,"Printed successfully!");
     		    frame.dispose();
     		    details_page newDetails = new details_page(login_page.u);
     			System.out.println(login_page.u);
@@ -227,6 +366,10 @@ class print_data implements ActionListener{
         }
     }
     
+    /**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
     public static void main(String[] args){
     	long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {

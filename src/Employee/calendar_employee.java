@@ -28,19 +28,77 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+/**
+ * Fereastra unde se pot atribui zile libere
+ * @author Coruian Aurel-Ionut
+ */
 public class calendar_employee {
 	
-    private JFrame frame;
-    private JPanel calendarPanel, remainingPanel, eventPanel;
-    private JCalendar calendar;
-    private JLabel format, selectedDateLabel, hoursLabel, hoursText, daysLabel, daysText;
-    private JComboBox eventField;
-    private JButton addEventButton, removeEventButton, backButton;
-    private Map<String, String> events;
-    private int hours, days;
-    private String email;
+    /**
+     * Variabila JFrame pentru fereastra
+     */
+    JFrame frame;
+    /**
+     * Variabila JPanel pentru a imparti fereastra, avand pe acest panou calendaul
+     */
+    JPanel calendarPanel;
+    /**
+     * Variabila JPanel pentru a imparti fereastra, avand pe acest panou zilele ramase
+     */
+    JPanel remainingPanel;
+    /**
+     * Variabila JPanel pentru a imparti fereastra, avand pe acest panou containerele interactive si date despre ziua respectiva
+     */
+    JPanel eventPanel;
+    /**
+     * Variabila JCalendar din pachetul toedter folosita pentru a afisa un calendar
+     */
+    JCalendar calendar;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru data selectata
+     */
+    JLabel selectedDateLabel;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru zile libere ramase
+     */
+    JLabel daysLabel;
+    /**
+     * Variabila JLabel pentru a afisa numarul de zile libere ramase 
+     */
+    JLabel daysText;
+    /**
+     * Variabila JComboBox pentru a putea selecta ce fel de zi libera poti alege
+     */
+    JComboBox eventField;
+    /**
+     * Variabila JButton pentru a adauga o zi libera
+     */
+    JButton addEventButton;
+    /**
+     * Variabila JButton pentru a sterge o zi libera
+     */
+    JButton removeEventButton;
+    /**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+    JButton backButton;
+    /**
+     * Variabila Map(String, String) pentru a retine data si tipul de zi libera luat
+     */
+    Map<String, String> events;
+    /**
+     * Variabila int pentru a stoca valoarea din baza de date pentru numarul de ore lucrate
+     */
+    int hours;
+    /**
+     * Variabila int pentru a stoca valoarea din baza de date pentru numarul de zile libere ramase
+     */
+    int days;   
     
-    
+    /**
+     * Constructor
+     * @param emp_mail Preia de la login emailul angajatului
+     */
     public calendar_employee(String emp_mail) {
     	selectedDateLabel = new JLabel();
     	try {
@@ -52,8 +110,9 @@ public class calendar_employee {
             	days = rs.getInt(2);
             }
     		
-    	} catch(Exception ex) {
-    		ex.printStackTrace();
+    	} catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Database error, could not get free days left from database", "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();   
     	}
         // Initialize the calendar and events list
         calendar = new JCalendar();
@@ -70,8 +129,9 @@ public class calendar_employee {
             	events.put(d, s);
         	}
         	updateSelectedDateLabel();
-        } catch(Exception ex) {
-        	ex.printStackTrace();
+        } catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Database error, could not get date and type leave", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
         // Create the frame
         frame = new JFrame("Planner");
@@ -131,9 +191,10 @@ public class calendar_employee {
 	                        	conn con = new conn();
 	                        	String q = "update timeoff set type='"+event+"' where username='"+emp_mail+"' and date='"+date+"'";
 	                        	con.st.executeUpdate(q);
-	                        } catch(Exception ex) {
-	                        	ex.printStackTrace();
-	                        }
+	                        } catch(Exception ex){
+	        	                JOptionPane.showMessageDialog(null, "Database error, check that all fields are correct", "Error", JOptionPane.ERROR_MESSAGE);
+	        	                ex.printStackTrace();
+	        	            }
 	                        updateSelectedDateLabel();
 	                    }
 	                }
@@ -146,9 +207,10 @@ public class calendar_employee {
 		                    	con.st.executeUpdate(q);
 		                    	q = "update date set days='"+(days-1)+"' where username='"+emp_mail+"'";
 		                        con.st.executeUpdate(q);
-		                    } catch(Exception ex) {
-		                    	ex.printStackTrace();
-		                    }
+		                    } catch(Exception ex){
+		    	                JOptionPane.showMessageDialog(null, "Database error, check that all fields are correct", "Error", JOptionPane.ERROR_MESSAGE);
+		    	                ex.printStackTrace();
+		    	            }
 		                    updateSelectedDateLabel();
 		                	days--;
 			                daysText.setText(String.valueOf(days));
@@ -184,9 +246,10 @@ public class calendar_employee {
 	                    	con.st.executeUpdate(q);
 	                    	q = "update date set days='"+(days+1)+"' where username='"+emp_mail+"'";
 	                        con.st.executeUpdate(q);
-	                    } catch(Exception ex) {
-	                    	ex.printStackTrace();
-	                    }
+	                    } catch(Exception ex){
+	    	                JOptionPane.showMessageDialog(null, "Database error, could not delete from database", "Error", JOptionPane.ERROR_MESSAGE);
+	    	                ex.printStackTrace();
+	    	            }
 	                    events.remove(date);
 	                    updateSelectedDateLabel();
 	                    days++;
@@ -251,6 +314,9 @@ public class calendar_employee {
         frame.setVisible(true);
     }
 
+    /**
+     * Functie ce actualizeaza data selectata
+     */
     private void updateSelectedDateLabel() {
     	Date dateC = calendar.getDate();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -262,6 +328,10 @@ public class calendar_employee {
         selectedDateLabel.setText(date + " : " + event);
     }
 
+    /**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
     public static void main(String[] args) {
     	long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {

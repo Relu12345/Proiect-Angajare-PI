@@ -7,16 +7,107 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 import java.awt.event.*;
 
+/**
+ * Fereastra unde se pot actualiza datele unui angajat
+ * @author Coruian Aurel-Ionut
+ */
 class update_employee  implements ActionListener{
 
+    /**
+     * Variabila JFrame pentru fereastra
+     */
     JFrame frame;
-    JLabel id,labelName,labelLast,labelAddress,labelPhone,labelEmail,labelEducation,labelJob,labelWelcome,labelCNP,labelPic;
-    JTextField textName,textLast,textAddress,textPhone,textEmail,textEducation,textCNP;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele de familie
+     */
+    JLabel labelName;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele mic
+     */
+    JLabel labelLast;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru adresa
+     */
+    JLabel labelAddress;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numar de telefon
+     */
+    JLabel labelPhone;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru email
+     */
+    JLabel labelEmail;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru ultimele studii
+     */
+    JLabel labelEducation;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru locul de munca
+     */
+    JLabel labelJob;
+    /**
+     * Variabila JLabel pentru a afisa textul de bun venit
+     */
+    JLabel labelWelcome;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru CNP
+     */
+    JLabel labelCNP;
+    /**
+     * Variabila JLabel pentru a seta imaginea ferestrei
+     */
+    JLabel labelPic;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru numele de familie
+     */
+    JTextField textName;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru numele mic
+     */
+    JTextField textLast;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru adresa
+     */
+    JTextField textAddress;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru numarul de telefon
+     */
+    JTextField textPhone;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru email
+     */
+    JTextField textEmail;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru ultimele studii
+     */
+    JTextField textEducation;
+    /**
+     * Variabila JTextField pentru stocarea datelor introduse de user pentru CNP
+     */
+    JTextField textCNP;
+	/**
+	 * Variabila JComboBox pentru selectarea locului de munca
+	 */
 	JComboBox textJob;
-    JButton buttonUpdate,buttonCancel; 
+	/**
+     * Variabila JButton pentru a actualiza datele angajatului
+     */
+	JButton buttonUpdate;
+	/**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+	JButton buttonCancel; 
+    /**
+     * Variabila globala String pentru a putea accesa de oriunde email-ul angajatului
+     */
     String id_emp;
 
+    /**
+     * Constructor
+     * @param e_id Preia de la login username-ul adminului
+     */
     update_employee(String e_id){
+        id_emp=e_id;
         
         frame=new JFrame("Update Employee details");
         frame.setVisible(false);
@@ -25,8 +116,7 @@ class update_employee  implements ActionListener{
         frame.setBackground(Color.white);
         frame.setLayout(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        id_emp=e_id;    
+   
         labelPic=new JLabel();
         labelPic.setBounds(0,0,900,500);
         labelPic.setLayout(null);
@@ -99,6 +189,9 @@ class update_employee  implements ActionListener{
         labelJob.setFont(new Font("serif",Font.BOLD,20));
         labelPic.add(labelJob);
 
+        /**
+         * Variabila String[] pentru a stoca alegerile pentru combo box-ul cu tipurile de locuri de munca
+         */
         String[] selectiiJob = {"Student Worker", "Junior Developer", "Developer", "Senior Developer"};
         textJob=new JComboBox(selectiiJob);
         textJob.setBounds(200,250,150,30);
@@ -126,9 +219,25 @@ class update_employee  implements ActionListener{
         showData(e_id);
     }
 
+    /**
+     * Variabila int folosita pentru a verifica daca s-au luat sau nu date din baza de date pentru angajat
+     */
     int i=0;
-    String age,dat;
+    /**
+     * Variabila String folosita pentru a tine minte varsta
+     */
+    String age;
+    /**
+     * Variabila String folosita pentru a tine minte data nasterii
+     */
+    String dat;
+    
+    String EmailBack;
 
+    /**
+     * Functie pentru afisarea datelor din baza de date pentru un angajat in functie de id
+     * @param id Id-ul angajatului ale caror date vor fi afisate
+     */
     void showData(String id){
         try{
             conn con = new conn();
@@ -145,6 +254,7 @@ class update_employee  implements ActionListener{
                 textAddress.setText(rs.getString(6));
                 textPhone.setText(rs.getString(7));
                 textEmail.setText(rs.getString(8));
+                EmailBack = rs.getString(8);
                 textEducation.setText(rs.getString(9));
                 textJob.setSelectedItem(rs.getString(10));
                 textCNP.setText(rs.getString(11));
@@ -161,21 +271,35 @@ class update_employee  implements ActionListener{
             {
             	frame.setVisible(true);
             }
-        }catch(Exception ex){}
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Database error, could not get data from database", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
 
+    /**
+	 * Functie pentru actiunea rezultata in urma apasarii unui buton
+	 * @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	 */
     public void actionPerformed(ActionEvent ae){
         if(ae.getSource()==buttonUpdate && i==1){
             try{
                 conn con = new conn();
                 String q = "update employee set name='"+textName.getText()+"',fname='"+textLast.getText()+"',age='"+age+"',dob='"+dat+"',address='"+textAddress.getText()+"',phone='"+textPhone.getText()+"',email='"+textEmail.getText()+"',education='"+textEducation.getText()+"',post='"+textJob.getSelectedItem().toString()+"',cnp='"+textCNP.getText()+"' where emp_id='"+id_emp+"'";
                 con.st.executeUpdate(q);
+                q = "update date set username='"+textEmail.getText()+"' where username='"+EmailBack+"'";
+                con.st.executeUpdate(q);
+                q = "update pass set email='"+textEmail.getText()+"' where email='"+EmailBack+"'";
+                con.st.executeUpdate(q);
+                q = "update timeoff set username='"+textEmail.getText()+"' where username='"+EmailBack+"'";
+                con.st.executeUpdate(q);
                 JOptionPane.showMessageDialog(null,"Successfully updated!");
                 frame.dispose();
                 new details_page(login_page.u);
         		System.out.println(login_page.u);
             }catch(Exception e){
-                System.out.println("The error is:"+e);
+                JOptionPane.showMessageDialog(null, "Database error, check that all fields are correct", "Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
             }
         }
         if(ae.getSource()==buttonCancel){
@@ -185,7 +309,11 @@ class update_employee  implements ActionListener{
         }
     }
     
-    public static void main(String[] arg){
+    /**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
+    public static void main(String[] args){
     	long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 		    public void run() {

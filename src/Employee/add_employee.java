@@ -9,15 +9,122 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.*;
 
 
+/**
+ * Fereastra unde se poate adauga un angajat
+ * @author Coruian Aurel-Ionut
+ */
 public class add_employee implements ActionListener {
 
+	/**
+	 * Variabila JFrame pentru fereastra
+	 */
 	JFrame frame;
-    JLabel format,title,labelNume,labelFamilie,labelVarsta,labelData,labelAdr,labelTel,labelEmail,labelEdu,labelJob,labelCNP,pholder1,pholder2;
-    JTextField textNume,textFamilie,textVarsta,textData,textAdr,textTel,textEmail,textEdu,textCNP;
+    /**
+     * Variabila JLabel pentru a formata fereastra
+     */
+    JLabel format;
+    /**
+     * Variabila JLabel pentru a afisa textul de bun venit
+     */
+    JLabel title;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele de familie
+     */
+    JLabel labelNume;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numele mic
+     */
+    JLabel labelLast;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru varsta
+     */
+    JLabel labelVarsta;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru data nasterii
+     */
+    JLabel labelData;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru adresa
+     */
+    JLabel labelAdr;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru numarul de telefon
+     */
+    JLabel labelTel;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru email
+     */
+    JLabel labelEmail;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru ultimele studii
+     */
+    JLabel labelEdu;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru locul de munca
+     */
+    JLabel labelJob;
+    /**
+     * Variabila JLabel pentru a afisa textul pentru CNP
+     */
+    JLabel labelCNP;
+    /**
+     * Variabila JLabel pentru a organiza mai bine elementele de pe fereastra
+     */
+    JLabel pholder1,pholder2;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru numele de familie
+     */
+    JTextField textNume;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru numele mic
+     */
+    JTextField textLast;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru varsta
+     */
+    JTextField textVarsta;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru data nasterii
+     */
+    JTextField textData;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru adresa
+     */
+    JTextField textAdr;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru numarul de telefon
+     */
+    JTextField textTel;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru email
+     */
+    JTextField textEmail;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru ultimele studii
+     */
+    JTextField textEdu;
+    /**
+     * Variabila JTextField pentru a stoca datele introduse pentru CNP
+     */
+    JTextField textCNP;
+	/**
+	 * Variabila JComboBox pentru a putea selecta ce loc de munca o sa aiba angajatul
+	 */
 	JComboBox textJob;
-    JButton butonSubmit,butonCancel;
+    /**
+     * Variabila JButton pentru a adauga noul angajat
+     */
+    JButton butonSubmit;
+    /**
+     * Variabila JButton pentru a reveni la pagina de detalii
+     */
+    JButton butonCancel;
 
     
+    /**
+     * Constructor
+     * @param emp_id Preia de la login username-ul adminului
+     */
     add_employee(String emp_id){
         frame = new JFrame("Add Employee");
         frame.setBackground(Color.white);
@@ -47,15 +154,15 @@ public class add_employee implements ActionListener {
         textNume.setBounds(200,150,150,30);
         format.add(textNume);
 
-        labelFamilie = new JLabel("Last Name");
-        labelFamilie.setBounds(400,150,200,30);
-        labelFamilie.setFont(new Font("serif",Font.BOLD,20));
-        format.add(labelFamilie);
+        labelLast = new JLabel("Last Name");
+        labelLast.setBounds(400,150,200,30);
+        labelLast.setFont(new Font("serif",Font.BOLD,20));
+        format.add(labelLast);
 
-        textFamilie=new JTextField();
-        textFamilie.setFont(new Font("serif",Font.BOLD,15));
-        textFamilie.setBounds(600,150,150,30);
-        format.add(textFamilie);
+        textLast=new JTextField();
+        textLast.setFont(new Font("serif",Font.BOLD,15));
+        textLast.setBounds(600,150,150,30);
+        format.add(textLast);
 
         labelVarsta = new JLabel("Age");
         labelVarsta.setBounds(50,200,100,30);
@@ -166,11 +273,15 @@ public class add_employee implements ActionListener {
         frame.setLocation(200,20);
     }
  
+    /**
+	 * Functie pentru actiunea rezultata in urma apasarii unui buton
+	 * @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	 */
     @Override
 	public void actionPerformed(ActionEvent ae) {
 	
 		String Nume  = textNume.getText();
-        String Familie = textFamilie.getText();
+        String Familie = textLast.getText();
         String Varsta = textVarsta.getText();
         String Data = textData.getText();
         String Adresa = textAdr.getText();
@@ -180,20 +291,33 @@ public class add_employee implements ActionListener {
         String Job = textJob.getSelectedItem().toString();
         String CNP = textCNP.getText();
         if(ae.getSource() == butonSubmit){
-            try{
-                conn con = new conn();
-                int id=0;
-                String q = "insert into employee values('"+id+"','"+Nume+"','"+Familie+"','"+Varsta+"','"+Data+"','"+Adresa+"','"+Telefon+"','"+Email+"','"+Educatie+"','"+Job+"','"+CNP+"')";
-                con.st.executeUpdate(q);
-                q = "insert into date values('"+Email+"', '"+0+"', '"+0+"')";
-                con.st.executeUpdate(q);
-                JOptionPane.showMessageDialog(null,"Details Successfully Inserted!");
-                frame.dispose(); // close current frame.
-                new details_page(login_page.u);
-        		System.out.println(login_page.u);
-            }catch(Exception e){
-                System.out.println("The error is:"+e);
-            }
+        	if(Nume.isBlank() || Familie.isBlank() || Varsta.isBlank() || Data.isBlank() || Adresa.isBlank() || Telefon.isBlank() || Email.isBlank() || Educatie.isBlank() || Job.isBlank() || CNP.isBlank()){
+        		JOptionPane.showMessageDialog(null, "You have to complete all the fields!", "Error", JOptionPane.ERROR_MESSAGE);
+        	}
+        	else{
+        		try{
+	                conn con = new conn();
+	                String q1 = "SET  @num := 0";
+	                String q2 = "UPDATE employee SET emp_id = @num := (@num+1)";
+	                String q3 = "ALTER TABLE employee AUTO_INCREMENT = 1";
+	                con.st.executeUpdate(q1);
+	                con.st.executeUpdate(q2);
+	                con.st.executeUpdate(q3);
+	                String q = "insert into employee values('"+0+"', '"+Nume+"','"+Familie+"','"+Varsta+"','"+Data+"','"+Adresa+"','"+Telefon+"','"+Email+"','"+Educatie+"','"+Job+"','"+CNP+"')";
+	                con.st.executeUpdate(q);
+	                q = "insert into date values('"+Email+"', '"+0+"', '"+0+"', '"+0+"')";
+	                con.st.executeUpdate(q);
+	                q = "insert into pass values('"+Email+"', 'temp"+Nume+"')";
+	                con.st.executeUpdate(q);
+	                JOptionPane.showMessageDialog(null,"Account Successfully Created!\n Temporary password: temp"+Nume+"");
+	                frame.dispose(); // close current frame.
+	                new details_page(login_page.u);
+	        		System.out.println(login_page.u);
+	            }catch(Exception e){
+	                JOptionPane.showMessageDialog(null, "Database error, check that all fields are correct", "Error", JOptionPane.ERROR_MESSAGE);
+	                e.printStackTrace();
+	            }
+        	}
         }else if(ae.getSource() == butonCancel){
         	frame.dispose();
         	new details_page(login_page.u);
@@ -201,6 +325,10 @@ public class add_employee implements ActionListener {
         }
 	}
 	
+    /**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
 	public static void main(String[] args) {
 		long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {

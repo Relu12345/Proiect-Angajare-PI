@@ -6,12 +6,26 @@ import java.awt.event.*;
 import java.lang.Thread;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * Fereastra de inceput
+ * @author Coruian Aurel-Ionut
+ */
 class welcome_page implements ActionListener {
 	
+	/**
+	 * Variabila JFrame pentru fereastra
+	 */
 	JFrame frame;
+	/**
+	 * Variabila JButton pentru a continua la fereastra de login
+	 */
 	JButton buton;
 	
 	
+	/**
+	 * Constructor
+	 */
 	welcome_page(){
 	
 		frame = new JFrame("EMS");
@@ -48,17 +62,25 @@ class welcome_page implements ActionListener {
 		
 		frame.getContentPane().setBackground(Color.WHITE); // set frame background color
 		
-		frame.setVisible(true);
+	 	frame.setVisible(true);
 		frame.setSize(1260,650);
 		frame.setLocation(50,50); // setting on window location 	
 	}
 
+	/**
+	 * Functie pentru actiunea rezultata in urma apasarii unui buton
+	 * @param ae Variabila pentru reprezentarea obiectului asupra caruia se va aplica evenimentul
+	 */
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		frame.dispose();
 		new login_page();  // open login page on button click	
 	}
 	
+	/**
+	 * Functia de main
+	 * @param args Argumentele pentru main
+	 */
 	public static void main(String [] args) {
 		long startTime = System.nanoTime();
 		Runtime.getRuntime().addShutdownHook(new Thread() {
